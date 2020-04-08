@@ -633,7 +633,25 @@ module h5.application {
             let globalConfig = this.scope.globalConfig;
             this.loadAppConfig(userContext.company, userContext.division, userContext.m3User, globalConfig.environment).then((val: any) => {
                 if (this.scope.appConfig.authorizedUser === true) { // added for security
+                    // CHECK DIVISON RECORD
+                    this.appService.getCHGDIVAlphaRecord(userContext.m3User, userContext.division).then((valAlpha: M3.IMIResponse) => {
+                        let newDivi = valAlpha.item.AL30;
+                        if (newDivi != "") {
+                            console.log("Division doesn't need to be changed");
+                            userContext.division = newDivi;
+                            userContext.company = newDivi;
+                        } else {
 
+                            console.log("Division doesn't need to be changed");
+
+                        }
+
+                        this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
+                        this.refreshTransactionStatus();
+                    }, (err: M3.IMIResponse) => {
+                        console.log("err");
+                        console.log(err);
+                    });
                     this.loadData(this.scope.activeModule);
                     this.loadDefaultFields();
                     this.hideWarning();
@@ -859,11 +877,11 @@ module h5.application {
         private loadIONCONRecord(fieldName: string, selectedRow): void {
             let pk01 = selectedRow.PK01;
             let pk02 = selectedRow.PK02;
-            let pk03 = selectedRow.PK03; 
-            
+            let pk03 = selectedRow.PK03;
+
             this.scope.loadingData = true;
             this.scope.IONCONModule.transactionStatus.IONCONRecord = true;
-            this.appService.getIONCONAlphaRecord(pk01,pk02,pk03).then((val: M3.IMIResponse) => {
+            this.appService.getIONCONAlphaRecord(pk01, pk02, pk03).then((val: M3.IMIResponse) => {
                 this.scope.IONCONModule.IONCONRecord = val.items[0];
 
                 this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
@@ -875,8 +893,8 @@ module h5.application {
                 this.showError(error, [err.errorMessage]);
                 this.scope.statusBar.push({ message: error + " " + err.errorMessage, statusBarMessageType: h5.application.MessageType.Error, timestamp: new Date() });
             });
-            
-            this.appService.getIONCONNumericRecord(pk01,pk02,pk03).then((valNumeric: M3.IMIResponse) => {
+
+            this.appService.getIONCONNumericRecord(pk01, pk02, pk03).then((valNumeric: M3.IMIResponse) => {
 
                 let n096 = (parseInt(valNumeric.item.N096) === 1) ? true : false;
                 let n196 = (parseInt(valNumeric.item.N196) === 1) ? true : false;
@@ -905,10 +923,10 @@ module h5.application {
             // Needed keys
             let pk01 = this.scope.IONCONModule.IONCONRecord.PK01;
             let pk02 = this.scope.IONCONModule.IONCONRecord.PK02;
-            let pk03 = this.scope.IONCONModule.IONCONRecord.PK03; 
+            let pk03 = this.scope.IONCONModule.IONCONRecord.PK03;
             // alpha fileds to save 
             let al30 = this.scope.IONCONModule.IONCONRecord.AL30;
-            let al31 = this.scope.IONCONModule.IONCONRecord.AL31;           
+            let al31 = this.scope.IONCONModule.IONCONRecord.AL31;
             al30 = al30.substring(0, 29);
             al31 = al31.substring(0, 14);
             let al32 = this.scope.IONCONModule.IONCONRecord.AL32;
@@ -937,9 +955,9 @@ module h5.application {
                 this.showError(error, [error]);
             }
             else {
-                this.appService.saveIONCONAlphaRecord(pk01, pk02,pk03,al30, al31, al32, al33, al34, al35, al36).then((val: M3.IMIResponse) => {
-                this.appService.saveIONCONNumericRecord(pk01, pk02,pk03, n096, n196, n296, n396, n496, n596, n696, n796, n896, n996).then((valNumerc: M3.IMIResponse) => {
-                }, (err: M3.IMIResponse) => {
+                this.appService.saveIONCONAlphaRecord(pk01, pk02, pk03, al30, al31, al32, al33, al34, al35, al36).then((val: M3.IMIResponse) => {
+                    this.appService.saveIONCONNumericRecord(pk01, pk02, pk03, n096, n196, n296, n396, n496, n596, n696, n796, n896, n996).then((valNumerc: M3.IMIResponse) => {
+                    }, (err: M3.IMIResponse) => {
 
                     });
 
@@ -1000,10 +1018,10 @@ module h5.application {
             this.hideError();
             this.scope.IONCONModule.transactionStatus.IONCONRecord = true;
             // Needed keys
-        //    let pk01 = this.scope.IONCONModule.IONCONRecord.PK01;
-            let pk01 = this.scope.IONCONModule.IONCONRecord.PK02 + "_"+this.scope.IONCONModule.IONCONRecord.AL35;
+            //    let pk01 = this.scope.IONCONModule.IONCONRecord.PK01;
+            let pk01 = this.scope.IONCONModule.IONCONRecord.PK02 + "_" + this.scope.IONCONModule.IONCONRecord.AL35;
             let pk02 = this.scope.IONCONModule.IONCONRecord.PK02;
-            let pk03 = this.scope.IONCONModule.IONCONRecord.PK03; 
+            let pk03 = this.scope.IONCONModule.IONCONRecord.PK03;
 
             // alpha FIELDS to save 
             let al30 = this.scope.IONCONModule.IONCONRecord.AL30;
@@ -1014,7 +1032,7 @@ module h5.application {
             al30 = al30.substring(0, 29);
             al31 = al31.substring(0, 14);
             let al32 = this.scope.IONCONModule.IONCONRecord.AL32;
-           let al33 = ":";//this.scope.IONCONModule.IONCONRecord.AL33;
+            let al33 = ":";//this.scope.IONCONModule.IONCONRecord.AL33;
             let al34 = this.scope.IONCONModule.IONCONRecord.AL34;
             let al35 = this.scope.IONCONModule.IONCONRecord.AL35;
             let al36 = this.scope.IONCONModule.IONCONRecord.AL36;
@@ -1031,33 +1049,33 @@ module h5.application {
             let n996 = this.scope.IONCONModule.IONCONRecord.N996;
 
 
-        
 
-                this.appService.addIONCONAlphaRecord(pk01, pk02,pk03,al30, al31, al32, al33, al34, al35, al36).then((val: M3.IMIResponse) => {
 
-                    this.appService.addIONCONNumeric(pk01, pk02,pk03,n096, n196, n296, n396, n496, n596, n696, n796, n896, n996).then((valNumerc: M3.IMIResponse) => {
+            this.appService.addIONCONAlphaRecord(pk01, pk02, pk03, al30, al31, al32, al33, al34, al35, al36).then((val: M3.IMIResponse) => {
 
-                    }, (err: M3.IMIResponse) => {
+                this.appService.addIONCONNumeric(pk01, pk02, pk03, n096, n196, n296, n396, n496, n596, n696, n796, n896, n996).then((valNumerc: M3.IMIResponse) => {
 
-                    });
-                    this.loadIONCONList();
-                    this.refreshTransactionStatus();
-                    if (this.scope.IONCONModule.isMultipleAdd === false) {
-                        this.closeModalWindow();
-                        this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
-                    } else {
-                        this.clearFileds();
-                        this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
-
-                    }
-                   // this.focusOn('AL30');
                 }, (err: M3.IMIResponse) => {
 
-                    this.myError(err);
-                    this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
                 });
+                this.loadIONCONList();
+                this.refreshTransactionStatus();
+                if (this.scope.IONCONModule.isMultipleAdd === false) {
+                    this.closeModalWindow();
+                    this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
+                } else {
+                    this.clearFileds();
+                    this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
 
-       
+                }
+                // this.focusOn('AL30');
+            }, (err: M3.IMIResponse) => {
+
+                this.myError(err);
+                this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
+            });
+
+
 
             //next call start here
         }
@@ -1116,34 +1134,62 @@ module h5.application {
 
             this.scope.IONCONModule.IONCONRecord.PK01 = stco;
 
-     
-                this.scope.IONCONModule.IONCONRecord.KPID = "IONCON";
-                this.scope.IONCONModule.IONCONRecord.PK01 = "";//
-                this.scope.IONCONModule.IONCONRecord.PK02 = "";
-                this.scope.IONCONModule.IONCONRecord.PK03 = "";                
-                this.scope.IONCONModule.IONCONRecord.AL30 = "";
-                this.scope.IONCONModule.IONCONRecord.AL31 = "";
-                this.scope.IONCONModule.IONCONRecord.AL32 = "";
-                this.scope.IONCONModule.IONCONRecord.AL33 = "";
-                this.scope.IONCONModule.IONCONRecord.AL34 = "";
-                this.scope.IONCONModule.IONCONRecord.AL35 = "";
-                this.scope.IONCONModule.IONCONRecord.AL36 = "";
-                this.scope.IONCONModule.IONCONRecord.N096 = 0;
-                this.scope.IONCONModule.IONCONRecord.N196 = 0;
-                this.scope.IONCONModule.IONCONRecord.N296 = 0;
-                this.scope.IONCONModule.IONCONRecord.N396 = 0;
-                this.scope.IONCONModule.IONCONRecord.N496 = 0;
-                this.scope.IONCONModule.IONCONRecord.N596 = 0;
-                this.scope.IONCONModule.IONCONRecord.N696 = 0;
-                this.scope.IONCONModule.IONCONRecord.N796 = 0;
-                this.scope.IONCONModule.IONCONRecord.N896 = 0;
-                this.scope.IONCONModule.IONCONRecord.N996 = 0;
-                this.openIONCONAddRecordModal();
+
+            this.scope.IONCONModule.IONCONRecord.KPID = "IONCON";
+            this.scope.IONCONModule.IONCONRecord.PK01 = "";//
+            this.scope.IONCONModule.IONCONRecord.PK02 = "";
+            this.scope.IONCONModule.IONCONRecord.PK03 = "";
+            this.scope.IONCONModule.IONCONRecord.AL30 = "";
+            this.scope.IONCONModule.IONCONRecord.AL31 = "";
+            this.scope.IONCONModule.IONCONRecord.AL32 = "";
+            this.scope.IONCONModule.IONCONRecord.AL33 = "";
+            this.scope.IONCONModule.IONCONRecord.AL34 = "";
+            this.scope.IONCONModule.IONCONRecord.AL35 = "";
+            this.scope.IONCONModule.IONCONRecord.AL36 = "";
+            this.scope.IONCONModule.IONCONRecord.N096 = 0;
+            this.scope.IONCONModule.IONCONRecord.N196 = 0;
+            this.scope.IONCONModule.IONCONRecord.N296 = 0;
+            this.scope.IONCONModule.IONCONRecord.N396 = 0;
+            this.scope.IONCONModule.IONCONRecord.N496 = 0;
+            this.scope.IONCONModule.IONCONRecord.N596 = 0;
+            this.scope.IONCONModule.IONCONRecord.N696 = 0;
+            this.scope.IONCONModule.IONCONRecord.N796 = 0;
+            this.scope.IONCONModule.IONCONRecord.N896 = 0;
+            this.scope.IONCONModule.IONCONRecord.N996 = 0;
+            this.openIONCONAddRecordModal();
 
 
-        
+
         }
+        public getEmail(): void {
+      console.log("getEmail-------------------------" );
+  // call api for email
+            this.appService.getEmailFromMingle().then((mingleResponse: M3.IMIResponse) => {
+                console.log(" -----------mingleResponse--------------");
+                console.log(mingleResponse["UserDetailList"] );
+                
+                 console.log(" -----------mingleResponse.UserDetailList[0]--------------");
+                console.log(mingleResponse["UserDetailList"][0] );
+                
+                  console.log(" -----------mingleResponse.item[0].Email--------------");
+                console.log(mingleResponse["UserDetailList"][0].Email);
+                //assign email 
+                let email = mingleResponse["UserDetailList"][0].Email;
+                 console.log(" -----------mingleResponse.item[0].Email--------------"+ email);
+                //display variable
+                this.scope.IONCONModule.IONCONRecord.DIVI = email;
+                
+                
+                
+            }, (err: M3.IMIResponse) => {
+                console.log("err-------------------------");
+                console.log(err);
 
+            });
+            
+     
+            
+        }
 
         /**
         * Load the IONCON

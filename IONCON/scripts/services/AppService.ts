@@ -15,6 +15,9 @@ module h5.application {
         getIONCONNumericRecord(pk01: string,pk02: string,pk03: string): ng.IPromise<M3.IMIResponse> ;
         deleteIONCONAlphaRecord(pk01: string, pk02: string, pk03: string, pk04: string): ng.IPromise<M3.IMIResponse> ;
         deleteIONCONNumericRecord(pk01: string, pk02: string, pk03: string, pk04: string): ng.IPromise<M3.IMIResponse> ;
+        getCHGDIVAlphaRecord(pk01: string,pk02: string): ng.IPromise<M3.IMIResponse>;
+         saveCHGDIVIAlphaRecord(pk01: string, pk02: string, al30: string, al31: string, al32: string, al33: string, al34: string, al35: string, al36: string): ng.IPromise<M3.IMIResponse> ;
+        getEmailFromMingle(): ng.IPromise<M3.IMIResponse>;
         
     }
 
@@ -63,7 +66,14 @@ module h5.application {
                 }
             });
         }
+        public getEmailFromMingle(): ng.IPromise<M3.IMIResponse> {
 
+            let requestData = {
+             
+            };
+
+            return this.restService.executeMingleRestService( "/SocialService.Svc/User/Detail", requestData).then((val: M3.IMIResponse) => { return val; });
+        }
         public lstIONCONRecords(): ng.IPromise<M3.IMIResponse> {
 
             let requestData = {
@@ -106,6 +116,19 @@ module h5.application {
             };
             return this.restService.executeM3MIRestService("CUSEXTMI", "GetNumericKPI", requestData).then((val: M3.IMIResponse) => { return val; });
         }
+           public getCHGDIVAlphaRecord(pk01: string,pk02: string): ng.IPromise<M3.IMIResponse> {
+
+            let requestData = {
+                KPID: "CHGDIV",
+               PK01: pk01,
+                PK02: pk02,
+               
+
+
+
+            };
+            return this.restService.executeM3MIRestService("CUSEXTMI", "GetAlphaKPI", requestData).then((val: M3.IMIResponse) => { return val; });
+        }
         public getDivisionList(company: string, division: string): ng.IPromise<M3.IMIResponse> {
             let requestData = {
                 CONO: company,
@@ -138,13 +161,29 @@ module h5.application {
             return this.restService.executeM3MIRestService("CRS610MI", "LstByName", requestData).then((val: M3.IMIResponse) => { return val; });
         }
 
+      public saveCHGDIVIAlphaRecord(pk01: string, pk02: string, al30: string, al31: string, al32: string, al33: string, al34: string, al35: string, al36: string): ng.IPromise<M3.IMIResponse> {
 
+            let requestData = {
+                KPID: "CHGDIVI",
+                PK01: pk01,
+                PK02: pk02,
+                AL30: al30,
+                AL31: al31,
+                AL32: al32,
+                AL33: al33,
+                AL34: al34,
+                AL35: al35,
+                AL36: al36,
+
+            }
+            return this.restService.executeM3MIRestService("CUSEXTMI", "ChgAlphaKPI", requestData).then((val: M3.IMIResponse) => { return val; });
+        }
 
         public saveIONCONNumericRecord(pk01: string, pk02: string,pk03: string, n096: number, n196: number, n296: number, n396: number, n496: number, n596: number, n696: number, n796: number, n896: number, n996: number): ng.IPromise<M3.IMIResponse> {
 
             let requestData = {
                 KPID: "IONCON",
-               PK01: pk01,
+                PK01: pk01,
                 PK02: pk02,
                 PK03: pk03,
 

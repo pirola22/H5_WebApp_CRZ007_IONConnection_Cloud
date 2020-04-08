@@ -44,6 +44,10 @@ var h5;
                     }
                 });
             };
+            AppService.prototype.getEmailFromMingle = function () {
+                var requestData = {};
+                return this.restService.executeMingleRestService("/SocialService.Svc/User/Detail", requestData).then(function (val) { return val; });
+            };
             AppService.prototype.lstIONCONRecords = function () {
                 var requestData = {
                     KPID: "IONCON",
@@ -74,6 +78,14 @@ var h5;
                 };
                 return this.restService.executeM3MIRestService("CUSEXTMI", "GetNumericKPI", requestData).then(function (val) { return val; });
             };
+            AppService.prototype.getCHGDIVAlphaRecord = function (pk01, pk02) {
+                var requestData = {
+                    KPID: "CHGDIV",
+                    PK01: pk01,
+                    PK02: pk02,
+                };
+                return this.restService.executeM3MIRestService("CUSEXTMI", "GetAlphaKPI", requestData).then(function (val) { return val; });
+            };
             AppService.prototype.getDivisionList = function (company, division) {
                 var requestData = {
                     CONO: company,
@@ -99,6 +111,21 @@ var h5;
                     CONO: company
                 };
                 return this.restService.executeM3MIRestService("CRS610MI", "LstByName", requestData).then(function (val) { return val; });
+            };
+            AppService.prototype.saveCHGDIVIAlphaRecord = function (pk01, pk02, al30, al31, al32, al33, al34, al35, al36) {
+                var requestData = {
+                    KPID: "CHGDIVI",
+                    PK01: pk01,
+                    PK02: pk02,
+                    AL30: al30,
+                    AL31: al31,
+                    AL32: al32,
+                    AL33: al33,
+                    AL34: al34,
+                    AL35: al35,
+                    AL36: al36,
+                };
+                return this.restService.executeM3MIRestService("CUSEXTMI", "ChgAlphaKPI", requestData).then(function (val) { return val; });
             };
             AppService.prototype.saveIONCONNumericRecord = function (pk01, pk02, pk03, n096, n196, n296, n396, n496, n596, n696, n796, n896, n996) {
                 var requestData = {

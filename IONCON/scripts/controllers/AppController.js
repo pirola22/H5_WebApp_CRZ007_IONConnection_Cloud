@@ -492,6 +492,22 @@ var h5;
                 var globalConfig = this.scope.globalConfig;
                 this.loadAppConfig(userContext.company, userContext.division, userContext.m3User, globalConfig.environment).then(function (val) {
                     if (_this.scope.appConfig.authorizedUser === true) {
+                        _this.appService.getCHGDIVAlphaRecord(userContext.m3User, userContext.division).then(function (valAlpha) {
+                            var newDivi = valAlpha.item.AL30;
+                            if (newDivi != "") {
+                                console.log("Division doesn't need to be changed");
+                                userContext.division = newDivi;
+                                userContext.company = newDivi;
+                            }
+                            else {
+                                console.log("Division doesn't need to be changed");
+                            }
+                            _this.scope.IONCONModule.transactionStatus.IONCONRecord = false;
+                            _this.refreshTransactionStatus();
+                        }, function (err) {
+                            console.log("err");
+                            console.log(err);
+                        });
                         _this.loadData(_this.scope.activeModule);
                         _this.loadDefaultFields();
                         _this.hideWarning();
@@ -884,6 +900,24 @@ var h5;
                 this.scope.IONCONModule.IONCONRecord.N896 = 0;
                 this.scope.IONCONModule.IONCONRecord.N996 = 0;
                 this.openIONCONAddRecordModal();
+            };
+            AppController.prototype.getEmail = function () {
+                var _this = this;
+                console.log("getEmail-------------------------");
+                this.appService.getEmailFromMingle().then(function (mingleResponse) {
+                    console.log(" -----------mingleResponse--------------");
+                    console.log(mingleResponse["UserDetailList"]);
+                    console.log(" -----------mingleResponse.UserDetailList[0]--------------");
+                    console.log(mingleResponse["UserDetailList"][0]);
+                    console.log(" -----------mingleResponse.item[0].Email--------------");
+                    console.log(mingleResponse["UserDetailList"][0].Email);
+                    var email = mingleResponse["UserDetailList"][0].Email;
+                    console.log(" -----------mingleResponse.item[0].Email--------------" + email);
+                    _this.scope.IONCONModule.IONCONRecord.DIVI = email;
+                }, function (err) {
+                    console.log("err-------------------------");
+                    console.log(err);
+                });
             };
             AppController.prototype.loadIONCONModule = function (reLoad) {
                 var userContext = this.scope.userContext;

@@ -5,18 +5,33 @@ module h5.application {
         description: string;
         version: string;
         environment: string;
-        inforIONAPI: {
+        /* inforIONAPI: {
             URL: string;
             grant_type: string;
             username: string;
             password: string;
             client_id: string;
             client_secret: string;
-        };
+        };*/
+            inforIONAPI: {
+        URL: string;
+        grant_type: string;
+        username: string;
+        password: string;
+        client_id: string;
+        client_secret: string;
+        access_token_url: string;
+        useSessionOAuth: boolean;
+        sessionOAuthURL: string;
+    };
         inforIDMAPI: {
             URL: string;
         };
         inforM3API: {
+            URL: string;
+        };
+                            
+        inforMingleAPI: {
             URL: string;
         };
         companyId: string;

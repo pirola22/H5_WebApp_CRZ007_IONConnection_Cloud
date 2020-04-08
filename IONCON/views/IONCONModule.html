@@ -14,6 +14,12 @@
 				<button type="submit" class="h5Button {{theme.button}}"
 					ng-click="AppCtrl.openAddRecordwindow()">{{::languageConstants.get('Add
 					New ')}}</button>
+					<button type="submit" class="h5Button {{theme.button}}"
+					ng-click="AppCtrl.getEmail()">{{::languageConstants.get('Get Email ')}}</button>
+					<h5>{{::languageConstants.get(' Email ')}}</h5>
+			<input type="text" class="h5-input-md"
+				ng-model="IONCONModule.IONCONRecord.DIVI" name="DIVI"
+				title="DIVI" style="text-align: right" >
 			</h5>
 		</tr>
 		<div class="pager h5-margin-auto"></div>
